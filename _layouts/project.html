@@ -1,0 +1,64 @@
+---
+layout: default
+---
+{% assign category_label = page.category %}
+{% for cat in site.data.categories %}
+  {% if cat.slug == page.category %}
+    {% assign category_label = cat.label %}
+  {% endif %}
+{% endfor %}
+
+{% assign status_label = page.status %}
+{% for st in site.data.project_statuses %}
+  {% if st.slug == page.status %}
+    {% assign status_label = st.label %}
+  {% endif %}
+{% endfor %}
+
+<article class="post-single container">
+  <header class="post-header">
+    <div class="project-card-header">
+      <span class="project-status project-status--{{ page.status }}">{{ status_label }}</span>
+      <span class="project-category">{{ category_label }}</span>
+    </div>
+    <h1 class="post-title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="project-description project-description--lead">{{ page.description }}</p>
+    {% endif %}
+    {% if page.tags.size > 0 %}
+    <ul class="post-tags project-tags">
+      {% for tag in page.tags %}
+      <li><span class="tag">{{ tag }}</span></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if page.repo %}
+    <p class="project-links">
+      <a href="{{ page.repo }}" rel="noopener noreferrer">View repository &rarr;</a>
+    </p>
+    {% endif %}
+  </header>
+  {% if content != "" %}
+  <div class="post-content">
+    {{ content }}
+  </div>
+  {% endif %}
+  {% if page.repo %}
+    {% assign gh_repo = page.repo %}
+  {% elsif page.name %}
+    {% assign gh_repo = site.author.github | append: '/' | append: page.name %}
+  {% endif %}
+  {% if gh_repo %}
+  <section class="project-releases" data-repo="{{ gh_repo }}">
+    <h2 class="project-releases-heading">Releases</h2>
+    <div class="release-meta" aria-busy="true">
+      <div class="release-tags"></div>
+      <div class="release-downloads"></div>
+    </div>
+  </section>
+  <script src="{{ '/assets/js/lab-releases.js' | relative_url }}" defer></script>
+  {% endif %}
+  <footer class="post-footer">
+    <a class="back-link" href="{{ '/project/' | relative_url }}">&larr; All projects</a>
+  </footer>
+</article>

@@ -1,0 +1,24 @@
+---
+layout: default
+---
+<article class="post-single container">
+  <header class="post-header">
+    <time class="post-date" datetime="{{ page.date | date_to_xmlschema }}">
+      {{ page.date | date: "%B %d, %Y" }}
+    </time>
+    <h1 class="post-title">{{ page.title }}</h1>
+    {% if page.tags.size > 0 %}
+    <ul class="post-tags">
+      {% for tag in page.tags %}
+      <li><span class="tag">{{ tag }}</span></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </header>
+  <div class="post-content">
+    {{ content }}
+  </div>
+  <footer class="post-footer">
+    <a class="back-link" href="{{ '/' | relative_url }}">&larr; Back to home</a>
+  </footer>
+</article>

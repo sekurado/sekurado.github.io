@@ -1,0 +1,19 @@
+- slug: building
+  label: Building
+  order: 1
+
+- slug: exploring
+  label: Exploring
+  order: 2
+
+- slug: stable
+  label: Stable
+  order: 3
+
+- slug: paused
+  label: Paused
+  order: 4
+
+- slug: idea
+  label: Idea
+  order: 5

@@ -1,0 +1,40 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+pagination:
+  enabled: true
+---
+
+<section class="archive-header">
+  <div class="container">
+    <h1 class="archive-title">Blog</h1>
+    <p class="archive-description">All posts from the journey — newest first.</p>
+  </div>
+</section>
+
+<section class="post-list-section">
+  <div class="container">
+    <div class="post-list">
+      {% for post in paginator.posts %}
+        {% include post-card.html post=post %}
+      {% endfor %}
+    </div>
+
+    {% if paginator.total_pages > 1 %}
+    <nav class="pagination" aria-label="Blog pagination">
+      {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | relative_url }}">&larr; Newer posts</a>
+      {% else %}
+      <span></span>
+      {% endif %}
+      <span>Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+      {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | relative_url }}">Older posts &rarr;</a>
+      {% else %}
+      <span></span>
+      {% endif %}
+    </nav>
+    {% endif %}
+  </div>
+</section>

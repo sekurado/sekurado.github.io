@@ -1,0 +1,9 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-copy">&copy; {{ 'now' | date: '%Y' }} {{ site.author.name }}. Field notes.</p>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="https://github.com/{{ site.author.github }}" rel="noopener noreferrer">GitHub</a>
+      <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+    </nav>
+  </div>
+</footer>

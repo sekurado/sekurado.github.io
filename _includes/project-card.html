@@ -1,0 +1,41 @@
+{% assign category_label = include.project.category %}
+{% for cat in site.data.categories %}
+  {% if cat.slug == include.project.category %}
+    {% assign category_label = cat.label %}
+  {% endif %}
+{% endfor %}
+
+{% assign status_label = include.project.status %}
+{% assign status_order = 99 %}
+{% for st in site.data.project_statuses %}
+  {% if st.slug == include.project.status %}
+    {% assign status_label = st.label %}
+    {% assign status_order = st.order %}
+  {% endif %}
+{% endfor %}
+
+<article
+  class="project-card"
+  data-category="{{ include.project.category }}"
+  data-status="{{ include.project.status }}"
+  data-status-order="{{ status_order }}"
+  data-title="{{ include.project.title | downcase }}"
+>
+  <div class="project-card-header">
+    <span class="project-status project-status--{{ include.project.status }}">{{ status_label }}</span>
+    <span class="project-category">{{ category_label }}</span>
+  </div>
+  <h2 class="project-title">
+    <a href="{{ include.project.url | relative_url }}">{{ include.project.title }}</a>
+  </h2>
+  {% if include.project.description %}
+  <p class="project-description">{{ include.project.description }}</p>
+  {% endif %}
+  {% if include.project.tags.size > 0 %}
+  <ul class="post-tags project-tags">
+    {% for tag in include.project.tags %}
+    <li><span class="tag">{{ tag }}</span></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</article>

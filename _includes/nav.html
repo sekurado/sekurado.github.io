@@ -1,0 +1,15 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="site-logo" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="{{ '/about/' | relative_url }}">About</a>
+      <a href="{{ '/project/' | relative_url }}">Projects</a>
+      <a href="{{ '/blog/' | relative_url }}">Blog</a>
+      <a href="https://github.com/{{ site.author.github }}" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</header>

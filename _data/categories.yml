@@ -1,0 +1,20 @@
+- slug: offensive-red-team
+  label: Offensive / Red team
+
+- slug: defensive-blue-team
+  label: Defensive / Blue team
+
+- slug: appsec
+  label: AppSec & secure dev
+
+- slug: devsecops
+  label: Infrastructure & DevSecOps
+
+- slug: security-labs
+  label: Security learning labs
+
+- slug: general-apps
+  label: General apps
+
+- slug: backlog
+  label: Ideas / backlog

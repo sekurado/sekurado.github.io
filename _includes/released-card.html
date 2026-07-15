@@ -1,0 +1,15 @@
+{% assign project = include.project %}
+{% if project.repo %}
+  {% assign gh_repo = project.repo %}
+{% else %}
+  {% assign gh_repo = site.author.github | append: '/' | append: project.name %}
+{% endif %}
+
+<article class="released-card" data-repo="{{ gh_repo }}">
+  <h3 class="project-title">
+    <a href="{{ project.url | relative_url }}">{{ project.title }}</a>
+  </h3>
+  <div class="release-meta" aria-busy="true">
+    <div class="release-tags"></div>
+  </div>
+</article>

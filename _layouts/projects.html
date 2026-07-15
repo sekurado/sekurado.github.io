@@ -1,0 +1,49 @@
+---
+layout: default
+---
+<section class="archive-header">
+  <div class="container">
+    <h1 class="archive-title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="archive-description">{{ page.description }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="projects-section">
+  <div class="container">
+    <div class="projects-toolbar" role="toolbar" aria-label="Filter projects">
+      <div class="filter-group">
+        <span class="filter-label">Category</span>
+        <div class="filter-chips" data-filter="category">
+          <button type="button" class="filter-chip is-active" data-value="all" aria-pressed="true">All</button>
+          {% for cat in site.data.categories %}
+          <button type="button" class="filter-chip" data-value="{{ cat.slug }}" aria-pressed="false">{{ cat.label }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="filter-group filter-group--inline">
+        <label class="filter-toggle">
+          <input type="checkbox" id="ideas-only" data-filter="ideas-only">
+          <span>Ideas only</span>
+        </label>
+        <p class="projects-count" id="projects-count" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="project-grid" id="project-grid">
+      {% assign status_order = site.data.project_statuses | map: "slug" %}
+      {% for cat in site.data.categories %}
+        {% for project in site.projects %}
+          {% if project.category == cat.slug %}
+            {% include project-card.html project=project %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+
+    <p class="projects-empty" id="projects-empty" hidden>No projects match these filters.</p>
+  </div>
+</section>
+
+<script src="{{ '/assets/js/projects-filter.js' | relative_url }}" defer></script>

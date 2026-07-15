@@ -1,0 +1,18 @@
+<article class="post-card">
+  <time class="post-date" datetime="{{ include.post.date | date_to_xmlschema }}">
+    {{ include.post.date | date: "%b %d, %Y" }}
+  </time>
+  <h2 class="post-title">
+    <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+  </h2>
+  {% if include.post.excerpt %}
+  <p class="post-excerpt">{{ include.post.excerpt | strip_html | truncate: 160 }}</p>
+  {% endif %}
+  {% if include.post.tags.size > 0 %}
+  <ul class="post-tags">
+    {% for tag in include.post.tags %}
+    <li><span class="tag">{{ tag }}</span></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</article>
