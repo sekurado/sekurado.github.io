@@ -14,6 +14,9 @@ Expected vault layout::
 Point ``--blog-folder`` at ``MyVault/blog/name.github.io``.
 Only notes with ``publish: true`` are synced.
 
+Title defaults to the note filename (without ``.md``); slug defaults to a
+slugified title. Both can be overridden in front matter.
+
 Attachments are resolved from the vault ``_attachments`` folder (walked up
 from the blog folder) and copied into ``assets/img/``, with Obsidian embed/link
 syntax rewritten for Jekyll.
@@ -53,6 +56,7 @@ class Note:
     kind: str  # "post" | "project"
     meta: dict[str, Any]
     body: str
+    title: str
     slug: str
 
 
@@ -150,6 +154,20 @@ def slugify(value: str) -> str:
     return slug.strip("-") or "untitled"
 
 
+def resolve_title(meta: dict[str, Any], path: Path) -> str:
+    title = meta.get("title")
+    if title is not None and str(title).strip():
+        return str(title).strip()
+    return path.stem
+
+
+def resolve_slug(meta: dict[str, Any], title: str) -> str:
+    slug = meta.get("slug")
+    if slug is not None and str(slug).strip():
+        return str(slug).strip()
+    return slugify(title)
+
+
 def parse_date(value: Any, source: Path) -> date:
     if isinstance(value, datetime):
         return value.date()
@@ -175,16 +193,18 @@ def collect_notes(blog_folder: Path) -> list[Note]:
             meta, body = split_front_matter(path.read_text(encoding="utf-8"))
             if not meta or not meta.get("publish"):
                 continue
-            slug = str(meta.get("slug") or path.stem)
-            notes.append(Note(path, "post", meta, body, slug))
+            title = resolve_title(meta, path)
+            slug = resolve_slug(meta, title)
+            notes.append(Note(path, "post", meta, body, title, slug))
 
     if projects_dir.is_dir():
         for path in sorted(projects_dir.glob("*.md")):
             meta, body = split_front_matter(path.read_text(encoding="utf-8"))
             if not meta or not meta.get("publish"):
                 continue
-            slug = str(meta.get("slug") or path.stem)
-            notes.append(Note(path, "project", meta, body, slug))
+            title = resolve_title(meta, path)
+            slug = resolve_slug(meta, title)
+            notes.append(Note(path, "project", meta, body, title, slug))
 
     return notes
 
@@ -200,7 +220,7 @@ def build_link_map(notes: list[Note]) -> dict[str, str]:
         keys = {
             note.slug.lower(),
             note.path.stem.lower(),
-            slugify(str(note.meta.get("title", note.slug))).lower(),
+            slugify(note.title).lower(),
         }
         for key in keys:
             mapping[key] = url
@@ -346,17 +366,19 @@ def transform_content(
     return text
 
 
-def build_post_front_matter(meta: dict[str, Any], post_date: date) -> dict[str, Any]:
+def build_post_front_matter(
+    meta: dict[str, Any], title: str, post_date: date
+) -> dict[str, Any]:
     return {
-        "title": meta["title"],
+        "title": title,
         "date": post_date.isoformat(),
         "tags": meta.get("tags") or [],
     }
 
 
-def build_project_front_matter(meta: dict[str, Any]) -> dict[str, Any]:
+def build_project_front_matter(meta: dict[str, Any], title: str) -> dict[str, Any]:
     front_matter: dict[str, Any] = {
-        "title": meta["title"],
+        "title": title,
         "category": meta["category"],
         "status": meta["status"],
         "description": meta.get("description", ""),
@@ -383,9 +405,6 @@ def validate_note(
     categories: set[str],
     statuses: set[str],
 ) -> None:
-    if not note.meta.get("title"):
-        raise ValueError(f"Missing title in {note.path}")
-
     if note.kind == "post":
         parse_date(note.meta.get("date"), note.path)
         return
@@ -496,13 +515,13 @@ def sync(config: SyncConfig) -> int:
                 / "_posts"
                 / f"{post_date.isoformat()}-{note.slug}.md"
             )
-            front_matter = build_post_front_matter(note.meta, post_date)
+            front_matter = build_post_front_matter(note.meta, note.title, post_date)
             write_note(dest, front_matter, transformed_body, config.dry_run)
             posts_written += 1
             print(f"post: {note.path.name} -> {dest.relative_to(config.site_folder)}")
         else:
             dest = config.site_folder / "_projects" / f"{note.slug}.md"
-            front_matter = build_project_front_matter(note.meta)
+            front_matter = build_project_front_matter(note.meta, note.title)
             write_note(dest, front_matter, transformed_body, config.dry_run)
             projects_written += 1
             print(f"project: {note.path.name} -> {dest.relative_to(config.site_folder)}")

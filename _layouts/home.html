@@ -6,8 +6,17 @@ layout: default
     <p class="hero-label">Field notes</p>
     <h1 class="hero-title">{{ page.title }}</h1>
     <p class="hero-tagline">{{ page.tagline }}</p>
-    {% if page.start_here and site.posts.size > 0 %}
-    <a class="hero-cta" href="{{ page.start_here | relative_url }}">Start here &rarr;</a>
+    {% assign start_post = nil %}
+    {% if page.start_here %}
+      {% for post in site.posts %}
+        {% if post.slug == page.start_here %}
+          {% assign start_post = post %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if start_post %}
+    <a class="hero-cta" href="{{ start_post.url | relative_url }}">Start here &rarr;</a>
     {% endif %}
   </div>
 </section>
