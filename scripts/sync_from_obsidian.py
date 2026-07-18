@@ -192,10 +192,8 @@ def collect_notes(blog_folder: Path) -> list[Note]:
 def build_link_map(notes: list[Note]) -> dict[str, str]:
     mapping: dict[str, str] = {}
     for note in notes:
-        post_date: date | None = None
         if note.kind == "post":
-            post_date = parse_date(note.meta["date"], note.path)
-            url = f"/{post_date:%Y/%m/%d}/{note.slug}/"
+            url = f"/{note.slug}/"
         else:
             url = f"/project/{note.slug}/"
 

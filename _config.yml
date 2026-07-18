@@ -30,6 +30,7 @@ defaults:
       type: posts
     values:
       layout: post
+      permalink: /:title/
   - scope:
       path: ""
       type: projects
